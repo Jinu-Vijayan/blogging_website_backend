@@ -1,13 +1,14 @@
 const express = require("express");
 const { getAllPost, getPost, createPost, updatePost, deletePost, createComment, updateComment, deleteComment } = require("../controller");
+const {passport} = require("../middleware");
 
 const BlogRouter = express.Router();
 
 // Post Routes
 
-BlogRouter.get("/posts/all",getAllPost);
+BlogRouter.get("/posts/all",passport.authenticate('jwt', { session: false }),getAllPost);
 
-BlogRouter.post("/posts/",createPost);
+BlogRouter.post("/posts/",passport.authenticate('jwt', { session: false }),createPost);
 
 BlogRouter.get("/posts/:id",getPost);
 

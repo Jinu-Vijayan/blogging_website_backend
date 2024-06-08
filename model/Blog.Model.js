@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const blogSchema = new mongoose.Schema({
     userId : {
         type : mongoose.Types.ObjectId,
-        required : true
+        required : true,
+        ref : "users"
     },
     title : {
         type : String,
@@ -17,7 +18,7 @@ const blogSchema = new mongoose.Schema({
         type : Array,
         required : true
     },
-    comment : [
+    comments : [
         {
             comment : {
                 type : String,

@@ -1,12 +1,32 @@
-const getAllPost = (req,res) => {
+const { BlogModel } = require("../model");
+
+const getAllPost =async (req,res) => {
+
+    const blogs =await BlogModel.find().populate("userId","userName email");
+    console.log(blogs);
     res.status(200).json({
-        message : "Dummy response from getAllPost"
+        message : "All data fetched successfully",
+        data : blogs
     })
 };
 
-const createPost = (req,res) => {
+const createPost =async (req,res) => {
+
+    const {title, body, tags} = req.body;
+
+    const newBlog = new BlogModel({
+        userId : req.user._id,
+        title,
+        body,
+        tags,
+        comment : []
+    });
+
+    const blog = (await newBlog.save());
+
     res.status(200).json({
-        message : "Dummy response from createPost"
+        message : "Post create succesfully",
+        blogId : blog._id
     })
 };
 

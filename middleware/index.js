@@ -1,5 +1,5 @@
-const { Authentication } = require("./Auth");
+const { passport } = require("./Auth");
 
 module.exports = {
-    Authentication
+    passport
 }

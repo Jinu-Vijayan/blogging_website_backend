@@ -54,16 +54,82 @@ const signUp = async (req,res) => {
     };
 };
 
-const logIn = (req,res) => {
-    res.status(200).json({
-        message : "Dummy response for logIn"
-    })
+const logIn =async (req,res) => {
+
+    try{
+        
+        const {email,password} = req.body;
+        const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+
+        if(!email || !password){
+
+            const errObj = {
+                statusCode : 404,
+                message : "Please enter all required credentials"
+            }
+
+            throw new Error(JSON.stringify(errObj));
+        }
+
+        const user = await UserModel.findOne({email : email});
+
+        if(!user){
+
+            const errObj = {
+                statusCode : 400,
+                message : "Invalid credentials"
+            }
+            throw new Error(JSON.stringify(errObj));
+
+        }
+
+        // Check if the password maches with the account created using the given email
+        const userVerification = await bcrypt.compare(password,user.password);
+
+        if(!userVerification){
+
+            const errObj = {
+                statusCode : 400,
+                message : "Invalid credentials"
+            }
+            throw new Error(JSON.stringify(errObj));
+
+        }
+
+        let token = jwt.sign({
+            userId : user._id
+        },JWT_SECRET_KEY,{expiresIn : 60 * 60});
+
+        token = `Bearer ${token}`;
+
+        user.token = token;
+
+        user.save();
+
+
+        res.status(200).json({
+            message : "Login successful",
+            token : token
+        })
+
+    }catch(err){
+
+        const error = JSON.parse(err.message);
+        return res.status(error.statusCode || 500).json({
+            message : error.message || "INTERNAL SERVER ERROR OCCURED"
+        })
+
+    }
+
 };
 
-const logOut = (req,res) => {
+const logOut =async (req,res) => {
+
+    await UserModel.findByIdAndUpdate(req.user._id,{token : null});
     res.status(200).json({
-        message : "Dummy response for logOut"
+        message : "Logout succesfull"
     })
+
 };
 
 module.exports = {

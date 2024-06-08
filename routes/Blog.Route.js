@@ -6,15 +6,15 @@ const BlogRouter = express.Router();
 
 // Post Routes
 
-BlogRouter.get("/posts/all",passport.authenticate('jwt', { session: false }),getAllPost);
+BlogRouter.get("/posts/all",getAllPost);
 
 BlogRouter.post("/posts/",passport.authenticate('jwt', { session: false }),createPost);
 
 BlogRouter.get("/posts/:id",getPost);
 
-BlogRouter.put("/posts/:id",updatePost);
+BlogRouter.put("/posts/:id",passport.authenticate('jwt', { session: false }),updatePost);
 
-BlogRouter.delete("/posts/:id",deletePost);
+BlogRouter.delete("/posts/:id",passport.authenticate('jwt', { session: false }),deletePost);
 
 // Comment routes
 

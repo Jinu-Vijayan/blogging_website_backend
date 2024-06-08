@@ -26,7 +26,8 @@ const blogSchema = new mongoose.Schema({
             },
             userId : {
                 type : mongoose.Types.ObjectId,
-                required : true
+                required : true,
+                ref : "users"
             },
             createAt : {
                 type : Date,

@@ -18,10 +18,10 @@ BlogRouter.delete("/posts/:id",passport.authenticate('jwt', { session: false }),
 
 // Comment routes
 
-BlogRouter.post("/comments/:postId",createComment);
+BlogRouter.post("/comments/:postId",passport.authenticate('jwt', { session: false }),createComment);
 
-BlogRouter.put("/comments/",updateComment);
+BlogRouter.put("/comments/",passport.authenticate('jwt', { session: false }),updateComment);
 
-BlogRouter.delete("/comments/",deleteComment);
+BlogRouter.delete("/comments/",passport.authenticate('jwt', { session: false }),deleteComment);
 
 module.exports = BlogRouter;

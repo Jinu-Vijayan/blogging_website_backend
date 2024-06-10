@@ -91,12 +91,13 @@ const updatePost =async (req,res) => {
             })
         }
 
-        await BlogModel.findByIdAndUpdate(id,req.body);
-        const updateBlog = await BlogModel.findById(id);
+        const updatedBlog = await BlogModel.findByIdAndUpdate(id,req.body,{
+            returnDocument : "after"
+        });
         
         return res.status(200).json({
             message : "post update succesful",
-            data : updateBlog
+            data : updatedBlog
         })
 
     }catch(err){
@@ -144,22 +145,82 @@ const deletePost =async (req,res) => {
     }
 };
 
-const createComment = (req,res) => {
-    res.status(200).json({
-        message : "Dummy response from createComment"
-    })
+const createComment = async (req,res) => {
+
+    try{
+
+        const {postId} = req.params;
+        const blog = await BlogModel.findById(postId);
+        console.log(postId)
+
+        if(!blog){
+            return res.status(404).json({
+                message : "Blog with given id not found"
+            })
+        }
+
+        const newComment = req.body;
+        newComment.userId = req.user._id;
+
+        const updatedBlog = await BlogModel.findByIdAndUpdate(postId,{
+            $push : {
+                comments : newComment
+            }
+        },{
+            returnDocument : "after"
+        });
+
+        const createdComment = updatedBlog.comments[updatedBlog.comments.length - 1];
+
+        return res.status(201).json({
+            message : "comment created",
+            createdComment
+        })
+
+    }catch(err){
+
+        console.log(err);
+        return res.status(500).json({
+            message : "Internal server error occured"
+        })
+
+    }
 };
 
-const updateComment = (req,res) => {
-    res.status(200).json({
-        message : "Dummy response from updateComment"
-    })
+const updateComment = async (req,res) => {
+
+    try{
+
+        return res.status(200).json({
+            message : "Dummy response from updateComment"
+        })
+
+    }catch(err){
+
+        console.log(err);
+        return res.status(500).json({
+            message : "Internal server error occured"
+        })
+
+    }
 };
 
-const deleteComment = (req,res) => {
-    res.status(200).json({
-        message : "Dummy response from deleteComment"
-    })
+const deleteComment = async (req,res) => {
+
+    try{
+
+        return res.status(200).json({
+            message : "Dummy response from deleteComment"
+        })
+
+    }catch(err){
+
+        console.log(err);
+        return res.status(500).json({
+            message : "Internal server error occured"
+        })
+
+    }
 };
 
 module.exports = {

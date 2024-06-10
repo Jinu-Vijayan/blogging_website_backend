@@ -110,10 +110,38 @@ const updatePost =async (req,res) => {
 
 };
 
-const deletePost = (req,res) => {
-    res.status(200).json({
-        message : "Dummy response from deletePost"
-    })
+const deletePost =async (req,res) => {
+    try{
+
+        const {id} = req.params;
+        const blog = await BlogModel.findById(id).populate("userId");
+
+        if(!blog){
+            return res.status(404).json({
+                message : "Blog with given id  dosent exist"
+            })
+        }
+
+        if(String(blog.userId._id) !== String(req.user._id)){
+            return res.status(403).json({
+                message : "Unauthorized action"
+            })
+        }
+
+        await blog.deleteOne();
+
+        return res.status(200).json({
+            message : "Post deleted"
+        })
+
+    }catch(err){
+
+        console.log(err);
+        return res.status(500).json({
+            message : "Internal server error occured"
+        })
+
+    }
 };
 
 const createComment = (req,res) => {

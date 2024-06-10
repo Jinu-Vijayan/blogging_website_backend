@@ -191,8 +191,25 @@ const updateComment = async (req,res) => {
 
     try{
 
+        const {postId, commentId} = req.params;
+        
+        const blog = await BlogModel.findById(postId);
+        const comment =  blog.comments.id(commentId);
+
+        if(String(comment.userId)!== String(req.user._id)){
+            return res.status(403).json({
+                message : "Action Unauthorized"
+            })
+        }
+
+        comment.comment = req.body.comment;
+        comment.updatedAt = new Date();
+        await blog.save();
+        const updatedComment = blog.comments.id(commentId);
+
         return res.status(200).json({
-            message : "Dummy response from updateComment"
+            message : "comment updated",
+            updatedComment
         })
 
     }catch(err){

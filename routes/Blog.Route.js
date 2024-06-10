@@ -20,7 +20,7 @@ BlogRouter.delete("/posts/:id",passport.authenticate('jwt', { session: false }),
 
 BlogRouter.post("/comments/:postId",passport.authenticate('jwt', { session: false }),createComment);
 
-BlogRouter.put("/comments/",passport.authenticate('jwt', { session: false }),updateComment);
+BlogRouter.put("/comments/:postId/:commentId",passport.authenticate('jwt', { session: false }),updateComment);
 
 BlogRouter.delete("/comments/",passport.authenticate('jwt', { session: false }),deleteComment);
 

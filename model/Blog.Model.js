@@ -29,7 +29,11 @@ const blogSchema = new mongoose.Schema({
                 required : true,
                 ref : "users"
             },
-            createAt : {
+            createdAt  : {
+                type : Date,
+                default : new Date()
+            },
+            updatedAt : {
                 type : Date,
                 default : new Date()
             }

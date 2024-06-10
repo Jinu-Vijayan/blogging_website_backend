@@ -22,6 +22,6 @@ BlogRouter.post("/comments/:postId",passport.authenticate('jwt', { session: fals
 
 BlogRouter.put("/comments/:postId/:commentId",passport.authenticate('jwt', { session: false }),updateComment);
 
-BlogRouter.delete("/comments/",passport.authenticate('jwt', { session: false }),deleteComment);
+BlogRouter.delete("/comments/:postId/:commentId",passport.authenticate('jwt', { session: false }),deleteComment);
 
 module.exports = BlogRouter;

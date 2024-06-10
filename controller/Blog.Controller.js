@@ -200,7 +200,7 @@ const updateComment = async (req,res) => {
                 message : "Blog with given id not found"
             })
         }
-        
+
         const comment =  blog.comments.id(commentId);
 
         if(String(comment.userId)!== String(req.user._id)){
@@ -233,8 +233,43 @@ const deleteComment = async (req,res) => {
 
     try{
 
+        const {postId, commentId} = req.params;
+
+        const blog = await BlogModel.findById(postId);
+
+        if(!blog){
+            return res.status(404).json({
+                message : "Blog with given id not found"
+            })
+        }
+
+        const comment =  blog.comments.id(commentId);
+        if(!comment){
+            return res.status(404).json({
+                message : "Comment with given id not found"
+            })
+        }
+
+        if(String(comment.userId)!== String(req.user._id)){
+            return res.status(403).json({
+                message : "Action Unauthorized"
+            })
+        };
+
+        const updatedBlog = await BlogModel.findOneAndUpdate({
+            _id : postId
+        },{
+            $pull : {
+                comments : {_id : commentId}
+            }
+        },{
+            returnDocument : "after"
+        })
+
+        console.log(updatedBlog)
+
         return res.status(200).json({
-            message : "Dummy response from deleteComment"
+            message : "Comment deleted"
         })
 
     }catch(err){

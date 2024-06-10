@@ -194,6 +194,13 @@ const updateComment = async (req,res) => {
         const {postId, commentId} = req.params;
         
         const blog = await BlogModel.findById(postId);
+
+        if(!blog){
+            return res.status(404).json({
+                message : "Blog with given id not found"
+            })
+        }
+        
         const comment =  blog.comments.id(commentId);
 
         if(String(comment.userId)!== String(req.user._id)){
